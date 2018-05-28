@@ -24,6 +24,7 @@
 
 #include "rte_config.h"
 #include "rte_sched.h"
+#include "dpdk.h"
 
 lagopus_result_t
 dpdk_interface_queue_add(struct interface *ifp, dp_queue_info_t *queue) {
@@ -56,14 +57,13 @@ dpdk_interface_queue_add(struct interface *ifp, dp_queue_info_t *queue) {
 
 lagopus_result_t
 dpdk_interface_queue_delete(struct interface *ifp, uint32_t queue_id) {
-  struct dp_ifqueue new_ifqueue;
   int i;
 
   for (i = 0; i < ifp->ifqueue.nqueue; i++) {
     if (ifp->ifqueue.queues[i]->id == queue_id) {
       ifp->ifqueue.nqueue--;
       memcpy(&ifp->ifqueue.queues[i], &ifp->ifqueue.queues[i + 1],
-             ifp->ifqueue.nqueue - i);
+             (size_t)(ifp->ifqueue.nqueue - i));
       dpdk_queue_configure(ifp, &ifp->ifqueue);
       return LAGOPUS_RESULT_OK;
     }
@@ -86,8 +86,8 @@ dpdk_queue_configure(struct interface *ifp, struct dp_ifqueue *ifqueue) {
   }
   params.name = ifp->name;
   params.pipe_profiles = &pipe_params;
-  app_get_lcore_for_nic_tx(ifp->info.eth_dpdk_phy.port_number, &lcore);
-  params.socket = rte_lcore_to_socket_id(lcore);
+  app_get_lcore_for_nic_tx((uint8_t)ifp->info.eth_dpdk_phy.port_number, &lcore);
+  params.socket = (int)rte_lcore_to_socket_id(lcore);
   params.mtu = ifp->info.eth_dpdk_phy.mtu;
   params.frame_overhead = 12; /* minimum */
   params.n_subports_per_port = 1;
@@ -102,12 +102,12 @@ dpdk_queue_configure(struct interface *ifp, struct dp_ifqueue *ifqueue) {
     params.qsize[i] = 128;
   }
   for (i = 0; i < ifqueue->nqueue; i++) {
-    params.rate += ifqueue->queues[i]->peak_information_rate;
-    subport_params.tb_rate += ifqueue->queues[i]->peak_information_rate;
-    subport_params.tb_size += ifqueue->queues[i]->committed_burst_size;
-    pipe_params.tb_rate += ifqueue->queues[i]->peak_information_rate;
-    pipe_params.tb_size += ifqueue->queues[i]->committed_burst_size;
-    pipe_params.wrr_weights[i] = ifqueue->queues[i]->priority;
+    params.rate += (uint32_t)ifqueue->queues[i]->peak_information_rate;
+    subport_params.tb_rate += (uint32_t)ifqueue->queues[i]->peak_information_rate;
+    subport_params.tb_size += (uint32_t)ifqueue->queues[i]->committed_burst_size;
+    pipe_params.tb_rate += (uint32_t)ifqueue->queues[i]->peak_information_rate;
+    pipe_params.tb_size += (uint32_t)ifqueue->queues[i]->committed_burst_size;
+    pipe_params.wrr_weights[i] = (uint32_t)ifqueue->queues[i]->priority;
   }
   for (; i < RTE_SCHED_QUEUES_PER_PIPE; i++) {
     pipe_params.wrr_weights[i] = 1;
