@@ -116,14 +116,14 @@ s_freeup(const lagopus_pipeline_stage_t *sptr) {
   lagopus_msg_debug(1, "called.\n");
 }
 
-
+#if 0
 static void
 s_post_start(const lagopus_pipeline_stage_t *sptr, size_t idx, void *arg) {
   (void)sptr;
 
   lagopus_msg_debug(1, "called for " PFSZ(u) " with %p.\n", idx, arg);
 }
-
+#endif
 
 
 

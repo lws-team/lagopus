@@ -56,7 +56,7 @@ s_setup(const lagopus_pipeline_stage_t *sptr) {
   return ret;
 }
 
-
+#if 0
 static lagopus_result_t
 s_fetch(const lagopus_pipeline_stage_t *sptr,
         size_t idx, void *buf, size_t max) {
@@ -71,6 +71,7 @@ s_fetch(const lagopus_pipeline_stage_t *sptr,
     return 0LL;
   }
 }
+#endif
 
 
 static lagopus_result_t
@@ -103,7 +104,7 @@ s_main(const lagopus_pipeline_stage_t *sptr,
   }
 }
 
-
+#if 0
 static lagopus_result_t
 s_throw(const lagopus_pipeline_stage_t *sptr,
         size_t idx, void *buf, size_t n) {
@@ -117,7 +118,7 @@ s_throw(const lagopus_pipeline_stage_t *sptr,
     return 0LL;
   }
 }
-
+#endif
 
 static lagopus_result_t
 s_sched(const lagopus_pipeline_stage_t *sptr,

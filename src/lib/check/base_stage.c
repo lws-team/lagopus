@@ -673,7 +673,7 @@ s_base_stage_set_setup_hook(base_stage_t bs, base_stage_setup_proc_t proc) {
 
 
 static const lagopus_pipeline_stage_sched_proc_t
-const s_base_stage_sched_procs[] = {
+s_base_stage_sched_procs[] = {
   NULL,
   s_base_sched_single,
   s_base_sched_hint,
@@ -683,7 +683,7 @@ const s_base_stage_sched_procs[] = {
 
 
 static const lagopus_pipeline_stage_fetch_proc_t
-const s_base_stage_fetch_procs[] = {
+s_base_stage_fetch_procs[] = {
   NULL,
   s_base_fetch_single,
   s_base_fetch_hint,

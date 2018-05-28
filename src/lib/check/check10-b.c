@@ -128,11 +128,14 @@ s_freeup(const lagopus_pipeline_stage_t *sptr) {
 int
 main(int argc, const char *const argv[]) {
   lagopus_result_t st = LAGOPUS_RESULT_ANY_FAILURES;
+
+  (void)argc;
+  (void)argv;
+
+#if 0
   lagopus_pipeline_stage_t s = NULL;
 
   size_t nthd = 1;
-
-  (void)argc;
 
   if (IS_VALID_STRING(argv[1]) == true) {
     size_t tmp;
@@ -142,7 +145,6 @@ main(int argc, const char *const argv[]) {
     }
   }
 
-#if 0
   fprintf(stdout, "Creating... ");
   st = lagopus_pipeline_stage_create(&s, 0, "a_test",
                                      nthd,
