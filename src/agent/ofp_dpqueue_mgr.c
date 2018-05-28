@@ -25,6 +25,8 @@
 #include "lagopus/ofp_bridgeq_mgr.h"
 #include "lagopus/dp_apis.h"
 
+#include "ofp_dpqueue_mgr.h"
+
 #define MUXER_TIMEOUT 100LL * 1000LL * 1000LL
 #define TIMEOUT_SHUTDOWN_RIGHT_NOW     (100*1000*1000) /* 100msec */
 #define TIMEOUT_SHUTDOWN_GRACEFULLY    (1500*1000*1000) /* 1.5sec */
