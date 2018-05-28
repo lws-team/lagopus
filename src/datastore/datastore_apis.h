@@ -40,7 +40,7 @@ typedef struct datastore_interp_record 	*datastore_interp_t;
 
 
 typedef char 	*(*datastore_gets_proc_t)(char *s, int size, void *stream);
-typedef int	(*datastore_printf_proc_t)(void *stream, const char *fmt, ...);
+typedef int	(*datastore_printf_proc_t)(void *stream, const char *fmt, ...) __attr_format_printf__(2, 3);
 
 
 typedef enum {
