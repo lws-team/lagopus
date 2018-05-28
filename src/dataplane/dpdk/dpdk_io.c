@@ -740,6 +740,8 @@ dpdk_intr_event_callback(uint8_t portid, enum rte_eth_event_type type,
                          void *param) {
   struct interface *ifp;
 
+  (void)portid;
+
   switch (type) {
     case RTE_ETH_EVENT_INTR_LSC:
       ifp = param;
