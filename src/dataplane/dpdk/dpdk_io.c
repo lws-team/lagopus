@@ -258,7 +258,7 @@ app_lcore_io_rx_buffer_to_send (
   }
 
   lp->rx.mbuf_out_flush[worker] = 0;
-  ret = rte_ring_sp_enqueue_burst(lp->rx.rings[worker],
+  ret = (int)rte_ring_sp_enqueue_burst(lp->rx.rings[worker],
                                   (void **) lp->rx.mbuf_out[worker].array,
                                   bsz, NULL);
 
@@ -407,13 +407,13 @@ app_lcore_io_tx(struct app_lcore_params_io *lp,
             color = rte_meter_trtcm_color_blind_check(&ifp->ifqueue.meters[qidx],
                     rte_rdtsc(),
                     OS_M_PKTLEN(m));
-            rte_sched_port_pkt_write(m, 0, 0, 0, qidx, color);
+            rte_sched_port_pkt_write(m, 0, 0, 0, (uint32_t)qidx, color);
           }
         }
-        n_mbufs = rte_sched_port_enqueue(ifp->sched_port,
+        n_mbufs = (uint32_t)rte_sched_port_enqueue(ifp->sched_port,
                                          lp->tx.mbuf_out[port].array,
                                          n_mbufs);
-        n_mbufs = rte_sched_port_dequeue(ifp->sched_port,
+        n_mbufs = (uint32_t)rte_sched_port_dequeue(ifp->sched_port,
                                          lp->tx.mbuf_out[port].array,
                                          n_mbufs);
       }
