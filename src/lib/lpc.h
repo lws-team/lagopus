@@ -91,7 +91,9 @@ qlist_empty(const struct qlist_head *h)
   return !h->first;
 }
 
+#if !defined(offsetof)
 #define offsetof(TYPE, MEMBER) ((size_t) &((TYPE *)0)->MEMBER)
+#endif
 
 #define container_of(ptr, type, member) ({              \
       (type *)((char *)ptr - offsetof(type,member) );})
