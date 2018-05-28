@@ -221,7 +221,7 @@ dpdk_interface_queue_id_to_index(struct interface *ifp, uint32_t queue_id) {
 }
 
 static inline int
-dpdk_interface_device_name_to_index(char *name) {
+dpdk_interface_device_name_to_index(const char *name) {
   int i;
 
   for (i = 0; i < RTE_MAX_ETHPORTS; i++) {
