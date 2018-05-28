@@ -408,14 +408,15 @@ s_start_callout_main_loop(void) {
       lagopus_result_t sn_timed_tasks;
 
       lagopus_result_t r;
+      int cstate = 0;
 
       lagopus_chrono_t now;
       lagopus_chrono_t next_wakeup;
+#if defined(CO_MSG_DEBUG)
       lagopus_chrono_t prev_wakeup;
 
-      int cstate = 0;
-
       WHAT_TIME_IS_IT_NOW_IN_NSEC(prev_wakeup);
+#endif
 
       (void)lagopus_mutex_enter_critical(&s_sched_lck, &cstate);
       {
@@ -590,9 +591,9 @@ s_start_callout_main_loop(void) {
             lagopus_msg_debug(4,
                               "about to sleep, timeout " PF64(d) " nsec.\n",
                               timeout);
-#endif /* CO_MSG_DEBUG */
 
             prev_wakeup = next_wakeup;
+#endif /* CO_MSG_DEBUG */
 
             r = lagopus_bbq_wait_gettable(&s_urgent_tsk_q, timeout);
             if (unlikely(r <= 0 &&
@@ -614,9 +615,9 @@ s_start_callout_main_loop(void) {
           } else {
             WHAT_TIME_IS_IT_NOW_IN_NSEC(next_wakeup);
 
+#ifdef CO_MSG_DEBUG
             prev_wakeup = next_wakeup;
 
-#ifdef CO_MSG_DEBUG
             lagopus_msg_debug(4, "timeout zero. contiune.\n");
 #endif /* CO_MSG_DEBUG */
 
