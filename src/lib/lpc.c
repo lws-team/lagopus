@@ -61,7 +61,7 @@ __fls(unsigned long word)
 #else
   if (word != 0) {
     unsigned long temp = sizeof(word) * 8 - 1;
-    while ((word & (1 << temp)) == 0) {
+    while ((word & (1u << temp)) == 0) {
       temp--;
     }
     word = temp;
