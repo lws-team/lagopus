@@ -301,12 +301,12 @@ app_lcore_io_rx(struct app_lcore_params_io *lpio,
       uint32_t n_mbufs;
 
       portid = (uint8_t)lpio->rx.ifp[i]->info.eth.port_number;
-      n_mbufs = (uint32_t)dpdk_rx_burst(lpio->rx.ifp[i], i(void **)mbufs, bsz_rd);
+      n_mbufs = (uint32_t)dpdk_rx_burst(lpio->rx.ifp[i], (void **)mbufs, bsz_rd);
       for (j = 0; j < n_mbufs; j++) {
         switch (fifoness) {
           case FIFONESS_FLOW:
-            wkid = (uint8_t)CityHash64WithSeed(OS_MTOD(mbufs[j], void *),
-                                      sizeof(ETHER_HDR) + 2, portid) % n_workers;
+            wkid = (uint8_t)(CityHash64WithSeed(OS_MTOD(mbufs[j], void *),
+                                      sizeof(ETHER_HDR) + 2, portid) % n_workers);
             break;
           case FIFONESS_PORT:
             wkid = (uint8_t)(portid % n_workers);
@@ -735,8 +735,8 @@ out:
   return portid;
 }
 
-static void
-dpdk_intr_event_callback(uint8_t portid, enum rte_eth_event_type type,
+static int
+dpdk_intr_event_callback(uint16_t portid, enum rte_eth_event_type type,
                          void *param) {
   struct interface *ifp;
 
@@ -752,6 +752,8 @@ dpdk_intr_event_callback(uint8_t portid, enum rte_eth_event_type type,
     default:
       break;
   }
+
+  return 0;
 }
 
 static inline const char *
@@ -780,7 +782,7 @@ dpdk_configure_interface(struct interface *ifp) {
     return LAGOPUS_RESULT_INVALID_ARGS;
   }
   if (strlen(ifp->info.eth_dpdk_phy.device) > 0) {
-    uint8_t actual_portid;
+    uint16_t actual_portid;
     const char *name;
 
     /* make sure we don't have a interface that has same device option. */
