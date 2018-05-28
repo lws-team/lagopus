@@ -291,7 +291,7 @@ app_lcore_io_rx(struct app_lcore_params_io *lpio,
     for (i = 0; i < lpio->rx.nifs; i++) {
       uint32_t n_mbufs;
 
-      n_mbufs = dpdk_rx_burst(lpio->rx.ifp[i], mbufs, bsz_rd);
+      n_mbufs = (uint32_t)dpdk_rx_burst(lpio->rx.ifp[i], (void **)mbufs, bsz_rd);
       if (n_mbufs != 0) {
         dp_bulk_match_and_action(mbufs, n_mbufs, lp->worker.cache);
       }
@@ -300,20 +300,20 @@ app_lcore_io_rx(struct app_lcore_params_io *lpio,
     for (i = 0; i < lpio->rx.nifs; i++) {
       uint32_t n_mbufs;
 
-      portid = lpio->rx.ifp[i]->info.eth.port_number;
-      n_mbufs = dpdk_rx_burst(lpio->rx.ifp[i], mbufs, bsz_rd);
+      portid = (uint8_t)lpio->rx.ifp[i]->info.eth.port_number;
+      n_mbufs = (uint32_t)dpdk_rx_burst(lpio->rx.ifp[i], i(void **)mbufs, bsz_rd);
       for (j = 0; j < n_mbufs; j++) {
         switch (fifoness) {
           case FIFONESS_FLOW:
-            wkid = CityHash64WithSeed(OS_MTOD(mbufs[j], void *),
+            wkid = (uint8_t)CityHash64WithSeed(OS_MTOD(mbufs[j], void *),
                                       sizeof(ETHER_HDR) + 2, portid) % n_workers;
             break;
           case FIFONESS_PORT:
-            wkid = portid % n_workers;
+            wkid = (uint8_t)(portid % n_workers);
             break;
           case FIFONESS_NONE:
           default:
-            wkid = j % n_workers;
+            wkid = (uint8_t)(j % n_workers);
             break;
         }
         app_lcore_io_rx_buffer_to_send(lpio, wkid, mbufs[j], bsz_wr);
@@ -378,7 +378,7 @@ app_lcore_io_tx(struct app_lcore_params_io *lp,
       if (ring == NULL) {
         continue;
       }
-      ret = rte_ring_sc_dequeue_burst(ring,
+      ret = (int)rte_ring_sc_dequeue_burst(ring,
                                       (void **) &lp->tx.mbuf_out[port].array[n_mbufs],
                                       bsz_rd - n_mbufs, NULL);
 

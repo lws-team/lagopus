@@ -433,8 +433,9 @@ dpdk_interface_lookup(uint8_t portid) {
  */
 static inline lagopus_result_t
 dpdk_rx_burst(struct interface *ifp, void *mbufs[], size_t nb) {
-  return (lagopus_result_t)rte_eth_rx_burst(ifp->info.eth.port_number, 0,
-                                            mbufs, nb);
+  return (lagopus_result_t)rte_eth_rx_burst(
+		  (uint16_t)ifp->info.eth.port_number, 0,
+                  (struct rte_mbuf **)mbufs, (uint16_t)nb);
 }
 
 int app_parse_args(int argc, const char *argv[]);
