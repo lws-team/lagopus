@@ -259,6 +259,7 @@ freeproc(const lagopus_thread_t *t, void *arg) {
   bool is_valid = false;
   lagopus_result_t ret;
 
+  (void)arg;
   lagopus_msg_info("freeproc in\n");
   if (*t != dpqueue_thread) {
     lagopus_exit_fatal("other threads worked %p, %p", *t, dpqueue_thread);
