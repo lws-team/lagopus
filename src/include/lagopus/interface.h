@@ -66,6 +66,7 @@ struct dp_ifqueue {
   dp_queue_info_t *queues[DP_MAX_QUEUES];
 #ifdef HAVE_DPDK
   struct rte_meter_trtcm meters[RTE_SCHED_QUEUES_PER_TRAFFIC_CLASS];
+  struct rte_meter_trtcm_profile tp[RTE_SCHED_QUEUES_PER_TRAFFIC_CLASS];
 #endif /* HAVE_DPDK */
 };
 

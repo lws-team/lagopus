@@ -45,7 +45,9 @@ dpdk_interface_queue_add(struct interface *ifp, dp_queue_info_t *queue) {
   param.pir = queue->peak_information_rate;
   param.cbs = queue->committed_burst_size;
   param.pbs = queue->peak_burst_size;
-  rte_meter_trtcm_config(&new_ifqueue.meters[new_ifqueue.nqueue], &param);
+  rte_meter_trtcm_profile_config(&new_ifqueue.tp[new_ifqueue.nqueue], &param);
+  rte_meter_trtcm_config(&new_ifqueue.meters[new_ifqueue.nqueue],
+		         &new_ifqueue.tp[new_ifqueue.nqueue]);
   new_ifqueue.nqueue++;
   dpdk_queue_configure(ifp, &new_ifqueue);
   memcpy(&ifp->ifqueue, &new_ifqueue, sizeof(new_ifqueue));

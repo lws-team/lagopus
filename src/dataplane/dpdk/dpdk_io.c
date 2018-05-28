@@ -405,7 +405,7 @@ app_lcore_io_tx(struct app_lcore_params_io *lp,
           if (unlikely(pkt->queue_id != 0)) {
             qidx = dpdk_interface_queue_id_to_index(ifp, pkt->queue_id);
             color = rte_meter_trtcm_color_blind_check(&ifp->ifqueue.meters[qidx],
-                    rte_rdtsc(),
+		    &ifp->ifqueue.tp[qidx], rte_rdtsc(),
                     OS_M_PKTLEN(m));
             rte_sched_port_pkt_write(m, 0, 0, 0, (uint32_t)qidx, color);
           }
@@ -737,10 +737,11 @@ out:
 
 static int
 dpdk_intr_event_callback(uint16_t portid, enum rte_eth_event_type type,
-                         void *param) {
+                         void *param, void *out) {
   struct interface *ifp;
 
   (void)portid;
+  (void)out;
 
   switch (type) {
     case RTE_ETH_EVENT_INTR_LSC:
