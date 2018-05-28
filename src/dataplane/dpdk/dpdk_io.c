@@ -873,10 +873,9 @@ dpdk_configure_interface(struct interface *ifp) {
 
   if (!dp_dpdk_is_portid_specified() &&
       app.nic_rx_queue_mask[portid][0] == NIC_RX_QUEUE_UNCONFIGURED) {
-    struct app_lcore_params *lp;
+    struct app_lcore_params *lcp = NULL;
     uint8_t i;
 
-    lp = NULL;
     for (i = 0; i < dp_dpdk_lcore_count(); i++) {
       struct app_lcore_params *tlp = dp_dpdk_get_lcore_param(i);
       if (tlp->type != e_APP_LCORE_IO &&
@@ -884,20 +883,20 @@ dpdk_configure_interface(struct interface *ifp) {
         DPRINTF("lcore %d: tlp type %d, skip\n", i, tlp->type);
         continue;
       }
-      if (lp == NULL ||
-          lp->io.rx.n_nic_queues > tlp->io.rx.n_nic_queues) {
-        lp = tlp;
+      if (lcp == NULL ||
+          lcp->io.rx.n_nic_queues > tlp->io.rx.n_nic_queues) {
+        lcp = tlp;
       }
     }
-    if (lp == NULL) {
+    if (lcp == NULL) {
       lagopus_exit_fatal("Unassigned I/O core\n");
     }
-    lp->io.tx.nic_ports[lp->io.tx.n_nic_ports] = portid;
-    lp->io.tx.n_nic_ports++;
+    lcp->io.tx.nic_ports[lcp->io.tx.n_nic_ports] = portid;
+    lcp->io.tx.n_nic_ports++;
     app.nic_tx_port_mask[portid] = 1;
-    lp->io.rx.nic_queues[lp->io.rx.n_nic_queues].port = portid;
-    lp->io.rx.nic_queues[lp->io.rx.n_nic_queues].queue = 0;
-    lp->io.rx.n_nic_queues++;
+    lcp->io.rx.nic_queues[lcp->io.rx.n_nic_queues].port = portid;
+    lcp->io.rx.nic_queues[lcp->io.rx.n_nic_queues].queue = 0;
+    lcp->io.rx.n_nic_queues++;
     app.nic_rx_queue_mask[portid][0] = NIC_RX_QUEUE_ENABLED;
   }
   /* Init RX queues */
