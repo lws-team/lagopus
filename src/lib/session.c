@@ -554,10 +554,12 @@ session_poll(lagopus_session_t s[], int n, int timeout) {
 lagopus_result_t
 session_accept(lagopus_session_t s1, lagopus_session_t *s2) {
   int sock;
-  struct sockaddr_storage ss = {0,0,{0}};
+  struct sockaddr_storage ss;
   socklen_t ss_len = sizeof(ss);
   session_type_t t;
   lagopus_result_t ret;
+
+  memset(&ss, 0, sizeof(ss));
 
   sock = accept(s1->sock, (struct sockaddr *) &ss, &ss_len);
   if (sock  < 0) {
