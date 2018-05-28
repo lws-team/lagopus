@@ -51,6 +51,16 @@ lagopus_rdtsc(void) {
   return (((uint64_t)edx) << 32) | ((uint64_t)eax);
 }
 #else
+#if defined(LAGOPUS_CPU_AARCH64)
+static inline uint64_t
+lagopus_rdtsc(void)
+{
+        uint64_t tsc;
+
+        asm volatile("mrs %0, cntvct_el0" : "=r" (tsc));
+        return tsc;
+}
+#else
 #warning reading TSC thingies is not supported on this platform.
 static inline uint64_t
 lagopus_rdtsc(void) {
@@ -58,6 +68,7 @@ lagopus_rdtsc(void) {
                       "platform.\n");
   return 0LL;
 }
+#endif /* LAGOPUS_CPU_AARCH64 */
 #endif /* LAGOPUS_CPU_X86_64 || LAGOPUS_CPU_I386 */
 #else
 #warning reading TSC thingies is not supported with this compiler.

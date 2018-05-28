@@ -89,4 +89,4 @@ edit_dpdk_config CONFIG_RTE_LIBRTE_PMD_BOND=n $NEWCONFIG
 edit_dpdk_config CONFIG_RTE_APP_TEST=n $NEWCONFIG
 edit_dpdk_config CONFIG_RTE_TEST_PMD=n $NEWCONFIG
 
-${MAKE} T=${NEW_TARGET} config && ${MAKE} ROOTDIRS-y="buildtools lib drivers"
+${MAKE} T=${NEW_TARGET} config && ${MAKE} -j12 ROOTDIRS-y="buildtools lib drivers" CONFIG_RTE_KNI_KMOD=n CONFIG_RTE_EAL_IGB_UIO=n
