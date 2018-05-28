@@ -55,6 +55,7 @@
 struct lagopus_band {
   TAILQ_ENTRY(lagopus_band) next;
   struct meter_band *band;
+  struct rte_meter_srtcm_profile sp;
   union {
     struct rte_meter_srtcm kbps_meter;
     struct rte_meter_srtcm pps_meter;
@@ -115,7 +116,8 @@ dpdk_register_meter(struct meter *meter) {
         param.ebs = 0;
         param.cbs = KBPS2BYTEPS(band->rate);
       }
-      rte_meter_srtcm_config(&lband->kbps_meter, &param);
+      rte_meter_srtcm_profile_config(&lband->sp, &param);
+      rte_meter_srtcm_config(&lband->kbps_meter, &lband->sp);
     } else {
       /* unit of rate is pps */
       DPRINT("rate limit: %d packet per second\n", band->rate);
@@ -127,7 +129,8 @@ dpdk_register_meter(struct meter *meter) {
         param.ebs = 0;
         param.cbs = band->rate;
       }
-      rte_meter_srtcm_config(&lband->pps_meter, &param);
+      rte_meter_srtcm_profile_config(&lband->sp, &param);
+      rte_meter_srtcm_config(&lband->pps_meter, &lband->sp);
     }
     TAILQ_INSERT_TAIL(list, lband, next);
   }
@@ -156,7 +159,7 @@ lagopus_meter_packet(struct lagopus_packet *pkt, struct meter *meter,
   if ((meter->flags & OFPMF_PKTPS) == 0) {
     TAILQ_FOREACH(lband, list, next) {
       color = rte_meter_srtcm_color_blind_check(&lband->kbps_meter,
-                                                rte_rdtsc(),
+                                                &lband->sp, rte_rdtsc(),
                                                 OS_M_PKTLEN(PKT2MBUF(pkt)));
       if (color_band == NULL && color == e_RTE_METER_RED) {
         color_band = lband;
@@ -165,8 +168,8 @@ lagopus_meter_packet(struct lagopus_packet *pkt, struct meter *meter,
   } else {
     TAILQ_FOREACH(lband, list, next) {
       color = rte_meter_srtcm_color_blind_check(&lband->pps_meter,
-              rte_rdtsc(),
-              1);
+              	&lband->sp, rte_rdtsc(),
+                1);
       if (color_band == NULL && color == e_RTE_METER_RED) {
         color_band = lband;
       }
