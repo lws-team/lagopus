@@ -4,7 +4,7 @@
 
 
 
-
+#if 0
 typedef struct {
   lagopus_pipeline_stage_record s_stg;
 
@@ -113,14 +113,13 @@ s_finalize(const lagopus_pipeline_stage_t *sptr,
                     (is_canceled == false) ? "exit normally" : "canceled");
 }
 
-
 static void
 s_freeup(const lagopus_pipeline_stage_t *sptr) {
   (void)sptr;
 
   lagopus_msg_debug(1, "called.\n");
 }
-
+#endif
 
 
 
