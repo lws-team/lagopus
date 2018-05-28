@@ -156,12 +156,6 @@
 /* optimized tx write threshold for igb only. */
 #define APP_IGB_NIC_TX_WTHRESH  16
 
-/* ethernet addresses of ports */
-static struct ether_addr lagopus_ports_eth_addr[RTE_MAX_ETHPORTS];
-
-/* mask of enabled ports */
-static unsigned long lagopus_port_mask = 0;
-
 static struct rte_eth_conf port_conf = {
   .rxmode = {
     .split_hdr_size = 0,
@@ -726,8 +720,6 @@ static inline uint8_t
 dpdk_get_detachable_portid_by_name(const char *name) {
   uint8_t portid;
   struct rte_eth_dev *dev;
-  struct rte_pci_addr *addr;
-  char devname[RTE_ETH_NAME_MAX_LEN];
 
   for (portid = 0; portid < RTE_MAX_ETHPORTS; portid++) {
     dev = &rte_eth_devices[portid];
@@ -1183,7 +1175,7 @@ dpdk_clear_stats(uint8_t portid) {
 lagopus_result_t
 dpdk_change_config(uint8_t portid, uint32_t advertised, uint32_t config) {
   struct rte_eth_conf conf;
-  uint16_t link_speed, link_duplex;
+  uint16_t link_speed /*, link_duplex */;
   lagopus_result_t rv;
 
   if (advertised != 0) {
