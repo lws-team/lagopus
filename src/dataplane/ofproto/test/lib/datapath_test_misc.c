@@ -28,6 +28,7 @@
 #include <stdarg.h>
 
 #include "lagopus/flowdb.h"
+#include "lagopus/flowinfo.h"
 #include "datapath_test_misc.h"
 #include "datapath_test_misc_macros.h"
 
